@@ -11,6 +11,26 @@ I made this quick little bash script because I wanted the ability to:
   - optionally use bind mounts
   - umount with the option to immediately activate the boot environment and reboot.
 
+Personally, I use this script to safely automate my workflow. Here's a proof of concept:
+#+BEGIN_SRC bash
+root ~ # be-enter test
+Boot environment doesn't exist test.
+
+test doesn't exist! create test now? (Y or N) y
+** creating boot environment "test" ...
+** updating bootloader ...
+
+(chroot) # ./update-gentoo  # (run my gentoo automation script)
+(chroot) # rm -rf /         # run experimental command
+(chroot) # exit
+logout
+
+activate and reboot into "test" NOW? (Y or N) n
+
+root ~ # # ZFS Rocks o/
+root ~ #
+#+END_SRC
+
 * How it works
 Configure three variables at the top of the script:
 
