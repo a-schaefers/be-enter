@@ -76,6 +76,16 @@ if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then export PS
 I still recommend installing it and using
 zedenv-grub so that you may have nicely generated menuentries for each boot environment.
 
+** How to install zedenv
+There are good instructions on https://zedenv.readthedocs.io/en/latest/ and https://github.com/johnramsden/zedenv
+
+I recommend using a legacy bios and GRUB configuration, because it is easy to install the bootloader on multiple disks
+that are all basically plug-and-play, making for good redundancy while and simpler to work with than UEFI. So I also recommend
+using the https://github.com/johnramsden/zedenv-grub plugin.
+
+The instructions are kind of complicated sounding at first, but for example, this script is pretty much the way I install zedenv:
+https://github.com/a-schaefers/dotfiles/blob/gentoo/root-scripts/zedenv-install
+
 * Debug
 zedenv and beadm leave behind empty directories after unmounting,
 and will cause be-enter to fail if they are not removed. be-enter
