@@ -11,7 +11,10 @@ I made this quick little bash script because I wanted the ability to:
   - optionally use bind mounts
   - umount with the option to immediately activate the boot environment and reboot.
 
-Personally, I use this script to safely automate my workflow. Here's a proof of concept:
+Personally, I use this script to safely automate my workflow. I typically run my personal
+update-gentoo script inside the chroot, and then reboot into the latest Gentoo.
+
+Here's a proof of concept:
 #+BEGIN_SRC bash
 root ~ # be-enter test
 Boot environment doesn't exist test.
@@ -30,6 +33,10 @@ activate and reboot into "test" NOW? (Y or N) n
 root ~ # # ZFS Rocks o/
 root ~ #
 #+END_SRC
+
+In the above example, had "test" already existed, it would've simply mounted and chrooted-- no questions asked.
+If you provide no name at all and simply type "be-enter", it will generate a name using the value of
+$BE_NAME_AUTO (customize the variable inside the script.)
 
 * How it works
 Configure three variables at the top of the script:
