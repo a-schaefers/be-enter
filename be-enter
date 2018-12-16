@@ -48,16 +48,16 @@ if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then die "do n
 BE_NAME=$1
 [[ ! $BE_NAME ]] && BE_NAME="$BE_NAME_AUTO"
 
-zedenv_create() {
+be_create() {
     read -p "$BE_NAME doesn't exist! create $BE_NAME now? (Y or N) " -n 1 -r
     [[ ! $REPLY =~ ^[Yy]$ ]] && exit 0
-    $BE_TOOL create $BE_NAME && grub-mkconfig -o /boot/grub/grub.cfg
+    $BE_TOOL create $BE_NAME
 
     [[ $BE_TOOL == "beadm" ]] && rmdir --ignore-fail-on-non-empty /mnt/BE-*
     $BE_TOOL mount "$BE_NAME"
 }
 [[ $BE_TOOL == "beadm" ]] && rmdir --ignore-fail-on-non-empty /mnt/BE-*
-$BE_TOOL mount "$BE_NAME" || zedenv_create
+$BE_TOOL mount "$BE_NAME" || be_create
 
 [[ $BE_TOOL == "zedenv" ]] && BE_MOUNT=$(echo /tmp/zedenv-*) || BE_MOUNT=$(echo /mnt/BE-*)
 
