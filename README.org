@@ -18,7 +18,7 @@ Boot environment doesn't exist test.
 
 test doesn't exist! create test now? (Y or N) y
 ** creating boot environment "test" ...
-** updating bootloader ...
+** updating bootloader ...  # honestly the output is much noisier than this. ;)
 
 (chroot) # ./update-gentoo  # (run my gentoo automation script)
 (chroot) # rm -rf /         # run experimental command
