@@ -4,7 +4,7 @@ I made this quick little bash script because I wanted to:
 - optionally use bind mounts
 - umount with the option to immediately activate the boot environment and reboot.
 
-It requires a working zfs-on-root installation with working zedenv or beadm scripts already installed.
+It requires a working zfs-on-root installation with zedenv and / or beadm already installed.
 
 Tested with the following version of beadm:
 https://github.com/TemptorSent/beadm
