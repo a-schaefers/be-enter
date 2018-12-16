@@ -1,0 +1,20 @@
+I made this quick little bash script because I wanted to:
+
+* create, mount and chroot new boot environments automatically (utilizing the Linux beadm port or zedenv)
+* optionally use bind mounts
+* umount with the option to immediately activate the boot environment and reboot.
+
+It requires a working zfs-on-root installation with working zedenv or beadm scripts already installed.
+
+Tested with the following version of beadm:
+https://github.com/TemptorSent/beadm
+
+and of course zedenv:
+https://github.com/johnramsden/zedenv
+
+Even if you don't use zedenv, I still recommend installing it and using
+zedenv-grub so that you may have nicely generated menuentries for each boot environment.
+
+I recommend placing the following line in root's .bashrc to automatically see the prompt is chroot'ed.
+
+if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then export PS1="(chroot) $PS1"; fi
