@@ -1,0 +1,81 @@
+#!/bin/bash
+# Copyright (c) 2018 Adam Schaefers sch@efers.org
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+#    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#    copies of the Software, and to permit persons to whom the Software is
+#    furnished to do so, subject to the following conditions:
+
+#    The above copyright notice and this permission notice shall be included in all
+#    copies or substantial portions of the Software.
+
+#    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#    SOFTWARE.
+
+# automatically create a new boot zfs environment with zedenv/beadm and chroot it.
+
+# note: beadm will not mount a dataset with canmount=off , and zedenv by default
+# uses canmount=off instead of canmount=noauto
+
+# beadm or zedenv to be used for create/mount ?
+BE_TOOL="zedenv"
+
+# boot environment name format used if not given explicitly via $1
+BE_NAME_AUTO="GENTOO-17.1-$(date +%Y%m%d%H%M)"
+
+# [optional] bind mounts array - specify directories to be shared between host and chroot.
+# e.g if portage or ccache live on a separate datset
+# BIND_MOUNTS=("/usr/portage" "/gentoo/ccache")
+
+######################
+# now run the script #
+######################
+
+die() {
+    [ $# -gt 0 ] && printf -- "%s\n" "$*"
+    exit 1
+}
+
+if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then die "do not run zedenv-enter inside of zedenv-enter!" ; fi
+
+BE_NAME=$1
+[[ ! $BE_NAME ]] && BE_NAME="$BE_NAME_AUTO"
+
+zedenv_create() {
+    read -p "$BE_NAME doesn't exist! create $BE_NAME now? (Y or N) " -n 1 -r
+    [[ ! $REPLY =~ ^[Yy]$ ]] && exit 0
+    $BE_TOOL create $BE_NAME && grub-mkconfig -o /boot/grub/grub.cfg
+
+    [[ $BE_TOOL == "beadm" ]] && rmdir --ignore-fail-on-non-empty /mnt/BE-*
+    $BE_TOOL mount "$BE_NAME"
+}
+[[ $BE_TOOL == "beadm" ]] && rmdir --ignore-fail-on-non-empty /mnt/BE-*
+$BE_TOOL mount "$BE_NAME" || zedenv_create
+
+[[ $BE_TOOL == "zedenv" ]] && BE_MOUNT=$(echo /tmp/zedenv-*) || BE_MOUNT=$(echo /mnt/BE-*)
+
+cd "$BE_MOUNT" || die "cd $BE_MOUNT failed"
+mount --rbind /dev dev
+mount --make-rslave dev
+mount -t proc /proc proc
+mount --rbind /sys sys
+mount --make-rslave sys
+mount --rbind /tmp tmp
+for i in "${BIND_MOUNTS[@]}" ; do mount --bind "$i" "${i#*/}" ; done
+env -i HOME=/root TERM=$TERM /bin/chroot . bash -l
+for i in "${BIND_MOUNTS[@]}" ; do umount -l "${i#*/}" ; done
+umount -lR {dev,proc,sys,tmp}
+cd /
+
+$BE_TOOL umount "$BE_NAME"
+rmdir "$BE_MOUNT"
+
+read -p "activate and reboot into $BE_NAME NOW? (Y or N) " -n 1 -r
+[[ $REPLY =~ ^[Yy]$ ]] && $BE_TOOL activate "$BE_NAME" && reboot || exit 0
