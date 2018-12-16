@@ -1,8 +1,8 @@
 I made this quick little bash script because I wanted to:
 
-* create, mount and chroot new boot environments automatically (utilizing the Linux beadm port or zedenv)
-* optionally use bind mounts
-* umount with the option to immediately activate the boot environment and reboot.
+- create, mount and chroot new boot environments automatically (utilizing the Linux beadm port or zedenv)
+- optionally use bind mounts
+- umount with the option to immediately activate the boot environment and reboot.
 
 It requires a working zfs-on-root installation with working zedenv or beadm scripts already installed.
 
