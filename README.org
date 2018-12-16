@@ -94,7 +94,7 @@ https://github.com/a-schaefers/dotfiles/blob/gentoo/root-scripts/zedenv-install
 This can cause be-enter to fail if they are not removed. be-enter
 tries to work around this, but doesn't bend over backwards.
 
-- Beadm might have trouble mountin boot environments that were created by zedenv.
+- Beadm might have trouble mounting boot environments that were created by zedenv.
 
 Beadm will not mount a dataset with canmount=off , and zedenv by default
 uses canmount=off instead of canmount=noauto while managing boot environments.
