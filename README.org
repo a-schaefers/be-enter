@@ -12,7 +12,7 @@ I made this quick little bash script because I wanted the ability to:
   - umount with the option to immediately activate the boot environment and reboot.
 
 Personally, I use this script to safely automate my workflow. I typically run my personal
-update-gentoo script inside the chroot, and then reboot into the latest Gentoo.
+[[https://github.com/a-schaefers/dotfiles/blob/gentoo/root-scripts/update-gentoo][update-gentoo]] script inside the chroot, and then reboot into the latest Gentoo.
 
 Here's a proof of concept:
 #+BEGIN_SRC bash
