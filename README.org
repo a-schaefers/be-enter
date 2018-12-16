@@ -36,7 +36,7 @@ root ~ #
 
 In the above example, had "test" already existed, it would've simply mounted and chrooted-- no questions asked.
 If you provide no name at all and simply type "be-enter", it will generate a name using the value of
-$BE_NAME_AUTO (customize the variable inside the script.)
+$BE_NAME_AUTO.
 
 * How it works
 Configure three variables at the top of the script:
