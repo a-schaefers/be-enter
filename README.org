@@ -79,14 +79,23 @@ zedenv-grub so that you may have nicely generated menuentries for each boot envi
 ** How to install zedenv
 There are good instructions on https://zedenv.readthedocs.io/en/latest/ and https://github.com/johnramsden/zedenv
 
-I recommend using a legacy bios and GRUB configuration, because it is easy to install the bootloader on multiple disks
+I recommend using a legacy bios and GRUB configuration,
+because it is easy to install the bootloader on multiple disks
 that are all basically plug-and-play, making for good and simple redundancy. So I also recommend
 using the https://github.com/johnramsden/zedenv-grub plugin.
 
-The instructions are kind of complicated sounding at first, but for example, this script is pretty much the way I install zedenv:
+Depending on experience, zedenv instructions might sound complicated--
+this script is pretty much the way I install zedenv:
 https://github.com/a-schaefers/dotfiles/blob/gentoo/root-scripts/zedenv-install
 
 * Debug
-zedenv and beadm leave behind empty directories after unmounting,
-and will cause be-enter to fail if they are not removed. be-enter
+- Zedenv and beadm leave behind empty directories after unmounting.
+
+This can cause be-enter to fail if they are not removed. be-enter
 tries to work around this, but doesn't bend over backwards.
+
+- Beadm might have trouble mountin boot environments that were created by zedenv.
+
+Beadm will not mount a dataset with canmount=off , and zedenv by default
+uses canmount=off instead of canmount=noauto while managing boot environments.
+There may be other issues. Rule of thumb: pick a tool and stick with it.
