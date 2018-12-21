@@ -43,7 +43,7 @@ die() {
     exit 1
 }
 
-if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then die "do not run zedenv-enter inside of zedenv-enter!" ; fi
+if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then die "do not run be-enter inside of be-enter!" ; fi
 
 BE_NAME=$1
 [[ ! $BE_NAME ]] && BE_NAME="$BE_NAME_AUTO"
