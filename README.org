@@ -99,3 +99,6 @@ tries to work around this, but doesn't bend over backwards.
 Beadm will not mount a dataset with canmount=off , and zedenv by default
 uses canmount=off instead of canmount=noauto while managing boot environments.
 There may be other issues. Rule of thumb: pick a tool and stick with it.
+
+- Zedenv might have trouble destroying boot environments that were created by beadm
+Haven't looked into this yet. Looks to be another edge case. Just pick a tool and stick with it...
