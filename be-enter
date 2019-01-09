@@ -78,4 +78,7 @@ $BE_TOOL umount "$BE_NAME"
 rmdir "$BE_MOUNT"
 
 read -p "activate and reboot into $BE_NAME NOW? (Y or N) " -n 1 -r
-[[ $REPLY =~ ^[Yy]$ ]] && $BE_TOOL activate "$BE_NAME" && reboot || exit 0
+[[ ! $REPLY =~ ^[Yy]$ ]] && exit 0
+$BE_TOOL activate "$BE_NAME"
+# be doubly sure the new menu was regenerated properly
+grub-mkconfig -o /boot/grub/grub.cfg && reboot
