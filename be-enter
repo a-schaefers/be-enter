@@ -19,16 +19,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# automatically create a new boot environment with zedenv/beadm and chroot it.
-
-# note: beadm will not mount a dataset with canmount=off , and zedenv by default
-# uses canmount=off instead of canmount=noauto
+# automatically chroot a newly created BE with zedenv/beadm, optionally using bind mounts
 
 # beadm or zedenv to be used for create/mount ?
 BE_TOOL="zedenv"
 
 # boot environment name format used if not given explicitly via $1
-BE_NAME_AUTO="GENTOO-17.1-$(date +%Y%m%d%H%M)"
+BE_NAME_AUTO="GENTOO-$(date +%Y%m%d)"
 
 # [optional] bind mounts array - specify directories to be shared between host and chroot.
 # e.g if portage or ccache live on a separate datset
@@ -53,10 +50,10 @@ be_create() {
     [[ ! $REPLY =~ ^[Yy]$ ]] && exit 0
     $BE_TOOL create $BE_NAME
 
-    [[ $BE_TOOL == "beadm" ]] && rmdir --ignore-fail-on-non-empty /mnt/BE-*
+    [[ $BE_TOOL == "beadm" ]] && rmdir /mnt/BE-*
     $BE_TOOL mount "$BE_NAME"
 }
-[[ $BE_TOOL == "beadm" ]] && rmdir --ignore-fail-on-non-empty /mnt/BE-*
+[[ $BE_TOOL == "beadm" ]] && rmdir /mnt/BE-*
 $BE_TOOL mount "$BE_NAME" || be_create
 
 [[ $BE_TOOL == "zedenv" ]] && BE_MOUNT=$(echo /tmp/zedenv-*) || BE_MOUNT=$(echo /mnt/BE-*)
@@ -80,5 +77,5 @@ rmdir "$BE_MOUNT"
 read -p "activate and reboot into $BE_NAME NOW? (Y or N) " -n 1 -r
 [[ ! $REPLY =~ ^[Yy]$ ]] && exit 0
 $BE_TOOL activate "$BE_NAME"
-# be doubly sure the new menu was regenerated properly
+# be doubly sure the new menu was regenerated before rebooting
 grub-mkconfig -o /boot/grub/grub.cfg && reboot
