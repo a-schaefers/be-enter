@@ -19,7 +19,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# automatically chroot a newly created BE with zedenv/beadm, optionally using bind mounts
+# automatically chroot a newly created BE with zedenv/beadm, optionally using
+# bind mounts
 
 # beadm or zedenv to be used for create/mount ?
 BE_TOOL="zedenv"
@@ -27,20 +28,19 @@ BE_TOOL="zedenv"
 # boot environment name format used if not given explicitly via $1
 BE_NAME_AUTO="BE-$(date +%Y%m%d)"
 
-# [optional] bind mounts array - specify directories to be shared between host and chroot.
-# e.g if portage or ccache live on a separate datset
+# [optional] bind mounts array - specify directories to be shared between host
+# and chroot.
 # BIND_MOUNTS=("/usr/portage" "/gentoo/ccache")
 
-######################
-# now run the script #
-######################
+################################################################################
 
 die() {
     [ $# -gt 0 ] && printf -- "%s\n" "$*"
     exit 1
 }
 
-if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then die "do not run be-enter inside of be-enter!" ; fi
+[ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ] \
+    && die "do not run be-enter inside of be-enter!"
 
 BE_NAME=$1
 [[ ! $BE_NAME ]] && BE_NAME="$BE_NAME_AUTO"
@@ -56,7 +56,8 @@ be_create() {
 [[ $BE_TOOL == "beadm" ]] && rmdir /mnt/BE-*
 $BE_TOOL mount "$BE_NAME" || be_create
 
-[[ $BE_TOOL == "zedenv" ]] && BE_MOUNT=$(echo /tmp/zedenv-*) || BE_MOUNT=$(echo /mnt/BE-*)
+[[ $BE_TOOL == "zedenv" ]] && BE_MOUNT=$(echo /tmp/zedenv-*) \
+        || BE_MOUNT=$(echo /mnt/BE-*)
 
 cd "$BE_MOUNT" || die "cd $BE_MOUNT failed"
 mount --rbind /dev dev
