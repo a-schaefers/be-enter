@@ -25,7 +25,7 @@
 BE_TOOL="zedenv"
 
 # boot environment name format used if not given explicitly via $1
-BE_NAME_AUTO="GENTOO-$(date +%Y%m%d)"
+BE_NAME_AUTO="BE-$(date +%Y%m%d)"
 
 # [optional] bind mounts array - specify directories to be shared between host and chroot.
 # e.g if portage or ccache live on a separate datset
@@ -48,7 +48,7 @@ BE_NAME=$1
 be_create() {
     read -p "$BE_NAME doesn't exist! create $BE_NAME now? (Y or N) " -n 1 -r
     [[ ! $REPLY =~ ^[Yy]$ ]] && exit 0
-    $BE_TOOL create $BE_NAME
+    $BE_TOOL create "$BE_NAME"
 
     [[ $BE_TOOL == "beadm" ]] && rmdir /mnt/BE-*
     $BE_TOOL mount "$BE_NAME"
@@ -66,16 +66,14 @@ mount --rbind /sys sys
 mount --make-rslave sys
 mount --rbind /tmp tmp
 for i in "${BIND_MOUNTS[@]}" ; do mount --bind "$i" "${i#*/}" ; done
-env -i HOME=/root TERM=$TERM /bin/chroot . bash -l
+env -i HOME=/root TERM="$TERM" /bin/chroot . bash -l
 for i in "${BIND_MOUNTS[@]}" ; do umount -l "${i#*/}" ; done
 umount -lR {dev,proc,sys,tmp}
-cd /
+cd / || exit 1
 
 $BE_TOOL umount "$BE_NAME"
 rmdir "$BE_MOUNT"
 
 read -p "activate and reboot into $BE_NAME NOW? (Y or N) " -n 1 -r
 [[ ! $REPLY =~ ^[Yy]$ ]] && exit 0
-$BE_TOOL activate "$BE_NAME"
-# be doubly sure the new menu was regenerated before rebooting
-grub-mkconfig -o /boot/grub/grub.cfg && reboot
+$BE_TOOL activate "$BE_NAME" && reboot
